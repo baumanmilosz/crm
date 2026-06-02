@@ -7,6 +7,7 @@ import { authRouter } from './routes/auth.routes'
 import { clientsRouter } from './routes/clients.routes'
 import { projectsRouter } from './routes/projects.routes'
 import { notesRouter } from './routes/notes.routes'
+import { tasksRouter } from './routes/tasks.routes'
 import { errorMiddleware } from './middleware/error.middleware'
 
 export const app = express()
@@ -23,5 +24,6 @@ app.use('/api/auth', authRouter)
 app.use('/api/clients', clientsRouter)
 app.use('/api/projects', projectsRouter)
 app.use('/api/notes', notesRouter)
+app.use('/api/tasks', tasksRouter)
 
 app.use(errorMiddleware)
