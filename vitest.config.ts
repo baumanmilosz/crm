@@ -10,5 +10,6 @@ export default defineConfig({
     },
     pool: 'forks',
     poolOptions: { forks: { singleFork: true } },
+    fileParallelism: false,
   },
 })
