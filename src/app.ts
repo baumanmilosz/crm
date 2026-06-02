@@ -3,12 +3,14 @@ import helmet from 'helmet'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import rateLimit from 'express-rate-limit'
+import swaggerUi from 'swagger-ui-express'
 import { authRouter } from './routes/auth.routes'
 import { clientsRouter } from './routes/clients.routes'
 import { projectsRouter } from './routes/projects.routes'
 import { notesRouter } from './routes/notes.routes'
 import { tasksRouter } from './routes/tasks.routes'
 import { errorMiddleware } from './middleware/error.middleware'
+import { swaggerSpec } from './swagger/config'
 
 export const app = express()
 
@@ -19,6 +21,8 @@ app.use(cookieParser())
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }))
 
 app.get('/health', (_req, res) => { res.json({ status: 'ok' }) })
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 app.use('/api/auth', authRouter)
 app.use('/api/clients', clientsRouter)
