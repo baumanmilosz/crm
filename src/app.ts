@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import rateLimit from 'express-rate-limit'
 import { authRouter } from './routes/auth.routes'
 import { clientsRouter } from './routes/clients.routes'
+import { projectsRouter } from './routes/projects.routes'
 import { errorMiddleware } from './middleware/error.middleware'
 
 export const app = express()
@@ -19,5 +20,6 @@ app.get('/health', (_req, res) => { res.json({ status: 'ok' }) })
 
 app.use('/api/auth', authRouter)
 app.use('/api/clients', clientsRouter)
+app.use('/api/projects', projectsRouter)
 
 app.use(errorMiddleware)
