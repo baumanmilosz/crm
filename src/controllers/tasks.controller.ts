@@ -48,7 +48,7 @@ export async function listTasksController(req: Request, res: Response, next: Nex
 
 export async function getTaskController(req: Request, res: Response, next: NextFunction) {
   try {
-    const task = await tasksService.getTask(req.params.id, req.user!.id)
+    const task = await tasksService.getTask(req.params.id as string, req.user!.id)
     res.json({ data: task })
   } catch (err) { next(err) }
 }
@@ -84,7 +84,7 @@ export async function createTaskController(req: Request, res: Response, next: Ne
 
 export async function updateTaskController(req: Request, res: Response, next: NextFunction) {
   try {
-    const task = await tasksService.updateTask(req.params.id, req.user!.id, req.body)
+    const task = await tasksService.updateTask(req.params.id as string, req.user!.id, req.body)
     res.json({ data: task })
   } catch (err) { next(err) }
 }
@@ -115,14 +115,14 @@ export async function updateTaskController(req: Request, res: Response, next: Ne
  */
 export async function patchTaskStatusController(req: Request, res: Response, next: NextFunction) {
   try {
-    const task = await tasksService.patchTaskStatus(req.params.id, req.user!.id, req.body.status)
+    const task = await tasksService.patchTaskStatus(req.params.id as string, req.user!.id, req.body.status)
     res.json({ data: task })
   } catch (err) { next(err) }
 }
 
 export async function deleteTaskController(req: Request, res: Response, next: NextFunction) {
   try {
-    await tasksService.deleteTask(req.params.id, req.user!.id)
+    await tasksService.deleteTask(req.params.id as string, req.user!.id)
     res.status(204).send()
   } catch (err) { next(err) }
 }

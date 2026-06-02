@@ -40,7 +40,7 @@ export async function listNotesController(req: Request, res: Response, next: Nex
 
 export async function getNoteController(req: Request, res: Response, next: NextFunction) {
   try {
-    const note = await notesService.getNote(req.params.id, req.user!.id)
+    const note = await notesService.getNote(req.params.id as string, req.user!.id)
     res.json({ data: note })
   } catch (err) { next(err) }
 }
@@ -75,14 +75,14 @@ export async function createNoteController(req: Request, res: Response, next: Ne
 
 export async function updateNoteController(req: Request, res: Response, next: NextFunction) {
   try {
-    const note = await notesService.updateNote(req.params.id, req.user!.id, req.body)
+    const note = await notesService.updateNote(req.params.id as string, req.user!.id, req.body)
     res.json({ data: note })
   } catch (err) { next(err) }
 }
 
 export async function deleteNoteController(req: Request, res: Response, next: NextFunction) {
   try {
-    await notesService.deleteNote(req.params.id, req.user!.id)
+    await notesService.deleteNote(req.params.id as string, req.user!.id)
     res.status(204).send()
   } catch (err) { next(err) }
 }

@@ -45,7 +45,7 @@ export async function listClientsController(req: Request, res: Response, next: N
  */
 export async function getClientController(req: Request, res: Response, next: NextFunction) {
   try {
-    const client = await clientsService.getClient(req.params.id)
+    const client = await clientsService.getClient(req.params.id as string)
     res.json({ data: client })
   } catch (err) { next(err) }
 }
@@ -97,7 +97,7 @@ export async function createClientController(req: Request, res: Response, next: 
  */
 export async function updateClientController(req: Request, res: Response, next: NextFunction) {
   try {
-    const client = await clientsService.updateClient(req.params.id, req.body)
+    const client = await clientsService.updateClient(req.params.id as string, req.body)
     res.json({ data: client })
   } catch (err) { next(err) }
 }
@@ -120,7 +120,7 @@ export async function updateClientController(req: Request, res: Response, next: 
  */
 export async function deleteClientController(req: Request, res: Response, next: NextFunction) {
   try {
-    await clientsService.deleteClient(req.params.id)
+    await clientsService.deleteClient(req.params.id as string)
     res.status(204).send()
   } catch (err) { next(err) }
 }

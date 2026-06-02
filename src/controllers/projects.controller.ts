@@ -40,7 +40,7 @@ export async function listProjectsController(req: Request, res: Response, next: 
 
 export async function getProjectController(req: Request, res: Response, next: NextFunction) {
   try {
-    const project = await projectsService.getProject(req.params.id)
+    const project = await projectsService.getProject(req.params.id as string)
     res.json({ data: project })
   } catch (err) { next(err) }
 }
@@ -76,14 +76,14 @@ export async function createProjectController(req: Request, res: Response, next:
 
 export async function updateProjectController(req: Request, res: Response, next: NextFunction) {
   try {
-    const project = await projectsService.updateProject(req.params.id, req.body)
+    const project = await projectsService.updateProject(req.params.id as string, req.body)
     res.json({ data: project })
   } catch (err) { next(err) }
 }
 
 export async function deleteProjectController(req: Request, res: Response, next: NextFunction) {
   try {
-    await projectsService.deleteProject(req.params.id)
+    await projectsService.deleteProject(req.params.id as string)
     res.status(204).send()
   } catch (err) { next(err) }
 }
