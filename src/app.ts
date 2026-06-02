@@ -3,6 +3,8 @@ import helmet from 'helmet'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import rateLimit from 'express-rate-limit'
+import { authRouter } from './routes/auth.routes'
+import { errorMiddleware } from './middleware/error.middleware'
 
 export const app = express()
 
@@ -12,8 +14,8 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }))
 
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok' })
-})
+app.get('/health', (_req, res) => { res.json({ status: 'ok' }) })
 
-// Routes and error middleware will be added in later tasks
+app.use('/api/auth', authRouter)
+
+app.use(errorMiddleware)
