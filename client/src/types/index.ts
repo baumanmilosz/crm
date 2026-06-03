@@ -32,6 +32,7 @@ export type Task = {
   title: string
   status: TaskStatus
   dueDate?: string
+  timeSpentSeconds: number
   userId: string
   clientId?: string
   client?: Client

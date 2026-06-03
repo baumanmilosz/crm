@@ -32,6 +32,11 @@ export async function patchTaskStatus(id: string, status: TaskStatus): Promise<T
   return data.data
 }
 
+export async function patchTaskTime(id: string, timeSpentSeconds: number): Promise<Task> {
+  const { data } = await api.patch<SingleResponse>(`/tasks/${id}/time`, { timeSpentSeconds })
+  return data.data
+}
+
 export async function deleteTask(id: string): Promise<void> {
   await api.delete(`/tasks/${id}`)
 }

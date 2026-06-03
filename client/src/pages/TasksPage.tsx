@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   Table, Button, Modal, Form, Input, Select, Popconfirm, Space, Tag, DatePicker, message, Typography,
 } from 'antd'
@@ -9,11 +9,13 @@ import {
   createTask,
   updateTask,
   patchTaskStatus,
+  patchTaskTime,
   deleteTask,
   type TaskInput,
 } from '../api/tasks'
 import { getClients } from '../api/clients'
 import { getProjects } from '../api/projects'
+import { tokenStore } from '../api/tokenStore'
 import type { Task, TaskStatus } from '../types'
 import dayjs from 'dayjs'
 
@@ -25,6 +27,14 @@ const statusColors: Record<TaskStatus, string> = {
 
 type FormValues = TaskInput & { dueDatePicker?: dayjs.Dayjs }
 
+function formatSeconds(s: number): string {
+  const h = Math.floor(s / 3600)
+  const m = Math.floor((s % 3600) / 60)
+  const sec = s % 60
+  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
+  return `${m}:${String(sec).padStart(2, '0')}`
+}
+
 export default function TasksPage() {
   const queryClient = useQueryClient()
   const [messageApi, contextHolder] = message.useMessage()
@@ -32,9 +42,48 @@ export default function TasksPage() {
   const [editing, setEditing] = useState<Task | null>(null)
   const [form] = Form.useForm<FormValues>()
 
+  // runningTaskId drives the interval; refs mirror state for use in beforeunload closure
+  const [runningTaskId, setRunningTaskId] = useState<string | null>(null)
+  const runningTaskIdRef = useRef<string | null>(null)
+  const startedAtRef = useRef<number | null>(null)
+  const tasksRef = useRef<Task[]>([])
+  const [, setTick] = useState(0)
+
   const { data: tasks = [], isLoading } = useQuery({ queryKey: ['tasks'], queryFn: getTasks })
   const { data: clients = [] } = useQuery({ queryKey: ['clients'], queryFn: getClients })
   const { data: projects = [] } = useQuery({ queryKey: ['projects'], queryFn: getProjects })
+
+  useEffect(() => { tasksRef.current = tasks }, [tasks])
+
+  // Live counter — ticks every second while a timer is running
+  useEffect(() => {
+    if (!runningTaskId) return
+    const interval = setInterval(() => setTick(t => t + 1), 1000)
+    return () => clearInterval(interval)
+  }, [runningTaskId])
+
+  // Save on page unload — fetch keepalive survives tab close / refresh
+  useEffect(() => {
+    function handleBeforeUnload() {
+      if (!runningTaskIdRef.current || !startedAtRef.current) return
+      const task = tasksRef.current.find(t => t.id === runningTaskIdRef.current)
+      if (!task) return
+      const elapsed = Math.floor((Date.now() - startedAtRef.current) / 1000)
+      const total = task.timeSpentSeconds + elapsed
+      const token = tokenStore.get()
+      fetch(`/api/tasks/${runningTaskIdRef.current}/time`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ timeSpentSeconds: total }),
+        keepalive: true,
+      })
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [])
 
   const saveMutation = useMutation({
     mutationFn: (input: TaskInput) =>
@@ -55,11 +104,46 @@ export default function TasksPage() {
     onError: () => messageApi.error('Failed to update status'),
   })
 
+  const timeMutation = useMutation({
+    mutationFn: ({ id, timeSpentSeconds }: { id: string; timeSpentSeconds: number }) =>
+      patchTaskTime(id, timeSpentSeconds),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
+    onError: () => messageApi.error('Failed to save time'),
+  })
+
   const deleteMutation = useMutation({
     mutationFn: deleteTask,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tasks'] }),
     onError: () => messageApi.error('Failed to delete task'),
   })
+
+  function handleStart(task: Task) {
+    // If another timer is running, stop and save it first
+    if (runningTaskIdRef.current && startedAtRef.current) {
+      const prev = tasksRef.current.find(t => t.id === runningTaskIdRef.current)
+      if (prev) {
+        const elapsed = Math.floor((Date.now() - startedAtRef.current) / 1000)
+        timeMutation.mutate({ id: prev.id, timeSpentSeconds: prev.timeSpentSeconds + elapsed })
+      }
+    }
+    runningTaskIdRef.current = task.id
+    startedAtRef.current = Date.now()
+    setRunningTaskId(task.id)
+  }
+
+  function handleStop(task: Task) {
+    if (!startedAtRef.current) return
+    const elapsed = Math.floor((Date.now() - startedAtRef.current) / 1000)
+    timeMutation.mutate({ id: task.id, timeSpentSeconds: task.timeSpentSeconds + elapsed })
+    runningTaskIdRef.current = null
+    startedAtRef.current = null
+    setRunningTaskId(null)
+  }
+
+  function getDisplaySeconds(task: Task): number {
+    if (runningTaskIdRef.current !== task.id || !startedAtRef.current) return task.timeSpentSeconds
+    return task.timeSpentSeconds + Math.floor((Date.now() - startedAtRef.current) / 1000)
+  }
 
   function openCreate() {
     setEditing(null)
@@ -103,6 +187,23 @@ export default function TasksPage() {
           ]}
         />
       ),
+    },
+    {
+      title: 'Time',
+      key: 'time',
+      render: (_: unknown, record: Task) => {
+        const isRunning = runningTaskId === record.id
+        return (
+          <Space>
+            <Typography.Text code>{formatSeconds(getDisplaySeconds(record))}</Typography.Text>
+            {isRunning ? (
+              <Button size="small" danger onClick={() => handleStop(record)}>Stop</Button>
+            ) : (
+              <Button size="small" type="dashed" onClick={() => handleStart(record)}>Start</Button>
+            )}
+          </Space>
+        )
+      },
     },
     { title: 'Client', key: 'client', render: (_: unknown, r: Task) => r.client?.name ?? '-' },
     { title: 'Project', key: 'project', render: (_: unknown, r: Task) => r.project?.name ?? '-' },
