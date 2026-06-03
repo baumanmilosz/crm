@@ -59,6 +59,11 @@ export async function patchTaskStatus(id: string, userId: string, status: TaskSt
   return prisma.task.update({ where: { id }, data: { status } })
 }
 
+export async function patchTaskTime(id: string, userId: string, timeSpentSeconds: number) {
+  await prisma.task.findFirstOrThrow({ where: { id, userId } })
+  return prisma.task.update({ where: { id }, data: { timeSpentSeconds } })
+}
+
 export async function deleteTask(id: string, userId: string) {
   await prisma.task.findFirstOrThrow({ where: { id, userId } })
   return prisma.task.delete({ where: { id } })

@@ -55,11 +55,12 @@ model Note {
 }
 
 model Task {
-  id        String     @id @default(cuid())
-  title     String
-  status    TaskStatus @default(PENDING)
-  dueDate   DateTime?
-  userId    String
+  id               String     @id @default(cuid())
+  title            String
+  status           TaskStatus @default(PENDING)
+  dueDate          DateTime?
+  timeSpentSeconds Int        @default(0)
+  userId           String
   user      User       @relation(fields: [userId], references: [id])
   clientId  String?
   client    Client?    @relation(fields: [clientId], references: [id])

@@ -127,6 +127,7 @@ export const TaskScalarFieldEnum = {
   title: 'title',
   status: 'status',
   dueDate: 'dueDate',
+  timeSpentSeconds: 'timeSpentSeconds',
   userId: 'userId',
   clientId: 'clientId',
   projectId: 'projectId',

@@ -120,6 +120,17 @@ export async function patchTaskStatusController(req: Request, res: Response, nex
   } catch (err) { next(err) }
 }
 
+export async function patchTaskTimeController(req: Request, res: Response, next: NextFunction) {
+  try {
+    const task = await tasksService.patchTaskTime(
+      req.params.id as string,
+      req.user!.id,
+      req.body.timeSpentSeconds,
+    )
+    res.json({ data: task })
+  } catch (err) { next(err) }
+}
+
 export async function deleteTaskController(req: Request, res: Response, next: NextFunction) {
   try {
     await tasksService.deleteTask(req.params.id as string, req.user!.id)

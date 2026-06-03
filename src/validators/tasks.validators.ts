@@ -17,3 +17,7 @@ export const updateTaskSchema = z.object({
 export const patchStatusSchema = z.object({
   status: z.enum(['PENDING', 'IN_PROGRESS', 'DONE']),
 })
+
+export const patchTimeSchema = z.object({
+  timeSpentSeconds: z.number().int().min(0),
+})
