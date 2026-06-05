@@ -9,6 +9,7 @@ import { clientsRouter } from './routes/clients.routes'
 import { projectsRouter } from './routes/projects.routes'
 import { notesRouter } from './routes/notes.routes'
 import { tasksRouter } from './routes/tasks.routes'
+import { invoicesRouter } from './routes/invoices.routes'
 import { errorMiddleware } from './middleware/error.middleware'
 import { swaggerSpec } from './swagger/config'
 
@@ -29,5 +30,6 @@ app.use('/api/clients', clientsRouter)
 app.use('/api/projects', projectsRouter)
 app.use('/api/notes', notesRouter)
 app.use('/api/tasks', tasksRouter)
+app.use('/api/invoices', invoicesRouter)
 
 app.use(errorMiddleware)

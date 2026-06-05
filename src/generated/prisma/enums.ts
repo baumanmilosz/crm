@@ -25,3 +25,24 @@ export const TaskStatus = {
 } as const
 
 export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
+
+
+export const InvoiceStatus = {
+  DRAFT: 'DRAFT',
+  ISSUED: 'ISSUED',
+  PAID: 'PAID'
+} as const
+
+export type InvoiceStatus = (typeof InvoiceStatus)[keyof typeof InvoiceStatus]
+
+
+export const VatRate = {
+  VAT_23: 'VAT_23',
+  VAT_8: 'VAT_8',
+  VAT_5: 'VAT_5',
+  VAT_0: 'VAT_0',
+  ZW: 'ZW',
+  NP: 'NP'
+} as const
+
+export type VatRate = (typeof VatRate)[keyof typeof VatRate]

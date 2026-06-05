@@ -42,3 +42,13 @@ export type Note = Prisma.NoteModel
  * 
  */
 export type Task = Prisma.TaskModel
+/**
+ * Model Invoice
+ * 
+ */
+export type Invoice = Prisma.InvoiceModel
+/**
+ * Model InvoiceItem
+ * 
+ */
+export type InvoiceItem = Prisma.InvoiceItemModel
