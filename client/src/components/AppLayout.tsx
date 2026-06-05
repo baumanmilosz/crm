@@ -1,5 +1,6 @@
 import { Layout, Menu, Button, Typography, Space } from 'antd'
 import {
+  DashboardOutlined,
   UserOutlined,
   ProjectOutlined,
   CheckSquareOutlined,
@@ -12,6 +13,7 @@ import { useAuth } from '../context/AuthContext'
 const { Sider, Header, Content } = Layout
 
 const menuItems = [
+  { key: '/dashboard', icon: <DashboardOutlined />, label: 'Dashboard' },
   { key: '/clients', icon: <UserOutlined />, label: 'Clients' },
   { key: '/projects', icon: <ProjectOutlined />, label: 'Projects' },
   { key: '/tasks', icon: <CheckSquareOutlined />, label: 'Tasks' },
