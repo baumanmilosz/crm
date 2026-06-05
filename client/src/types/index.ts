@@ -51,3 +51,33 @@ export type Note = {
   project?: Project
   createdAt: string
 }
+
+export type InvoiceStatus = 'DRAFT' | 'ISSUED' | 'PAID'
+
+export type VatRate = 'VAT_23' | 'VAT_8' | 'VAT_5' | 'VAT_0' | 'ZW' | 'NP'
+
+export type InvoiceItem = {
+  id: string
+  description: string
+  quantity: string
+  unitPrice: string
+  vatRate: VatRate
+  invoiceId: string
+  createdAt: string
+}
+
+export type Invoice = {
+  id: string
+  number: string
+  issueDate: string
+  dueDate: string
+  status: InvoiceStatus
+  notes?: string
+  clientId: string
+  client: Client
+  projectId?: string
+  project?: Project
+  userId: string
+  items: InvoiceItem[]
+  createdAt: string
+}
