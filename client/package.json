@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.5.1",
     "@tanstack/react-query": "^5.80.0",
     "antd": "^5.24.0",
     "axios": "^1.9.0",
