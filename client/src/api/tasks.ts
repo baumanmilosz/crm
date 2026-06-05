@@ -17,6 +17,11 @@ export async function getTasks(): Promise<Task[]> {
   return data.data
 }
 
+export async function getTasksByClient(clientId: string): Promise<Task[]> {
+  const { data } = await api.get<ListResponse>('/tasks', { params: { clientId } })
+  return data.data
+}
+
 export async function createTask(input: TaskInput): Promise<Task> {
   const { data } = await api.post<SingleResponse>('/tasks', input)
   return data.data

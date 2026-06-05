@@ -16,6 +16,11 @@ export async function getClients(): Promise<Client[]> {
   return data.data
 }
 
+export async function getClient(id: string): Promise<Client> {
+  const { data } = await api.get<SingleResponse>(`/clients/${id}`)
+  return data.data
+}
+
 export async function createClient(input: ClientInput): Promise<Client> {
   const { data } = await api.post<SingleResponse>('/clients', input)
   return data.data

@@ -15,6 +15,11 @@ export async function getNotes(): Promise<Note[]> {
   return data.data
 }
 
+export async function getNotesByClient(clientId: string): Promise<Note[]> {
+  const { data } = await api.get<ListResponse>('/notes', { params: { clientId } })
+  return data.data
+}
+
 export async function createNote(input: NoteInput): Promise<Note> {
   const { data } = await api.post<SingleResponse>('/notes', input)
   return data.data

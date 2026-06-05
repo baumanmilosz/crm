@@ -16,6 +16,11 @@ export async function getProjects(): Promise<Project[]> {
   return data.data
 }
 
+export async function getProjectsByClient(clientId: string): Promise<Project[]> {
+  const { data } = await api.get<ListResponse>('/projects', { params: { clientId } })
+  return data.data
+}
+
 export async function createProject(input: ProjectInput): Promise<Project> {
   const { data } = await api.post<SingleResponse>('/projects', input)
   return data.data
