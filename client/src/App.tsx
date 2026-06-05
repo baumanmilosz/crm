@@ -9,6 +9,9 @@ import ClientDetailPage from './pages/ClientDetailPage'
 import ProjectsPage from './pages/ProjectsPage'
 import TasksPage from './pages/TasksPage'
 import NotesPage from './pages/NotesPage'
+import InvoicesPage from './pages/InvoicesPage'
+import InvoiceFormPage from './pages/InvoiceFormPage'
+import InvoiceDetailPage from './pages/InvoiceDetailPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
@@ -37,6 +40,10 @@ export default function App() {
           <Route path="projects" element={<ProjectsPage />} />
           <Route path="tasks" element={<TasksPage />} />
           <Route path="notes" element={<NotesPage />} />
+          <Route path="invoices" element={<InvoicesPage />} />
+          <Route path="invoices/new" element={<InvoiceFormPage />} />
+          <Route path="invoices/:id" element={<InvoiceDetailPage />} />
+          <Route path="invoices/:id/edit" element={<InvoiceFormPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

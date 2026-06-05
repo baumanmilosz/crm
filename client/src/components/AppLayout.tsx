@@ -5,6 +5,7 @@ import {
   ProjectOutlined,
   CheckSquareOutlined,
   FileTextOutlined,
+  AuditOutlined,
   LogoutOutlined,
 } from '@ant-design/icons'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
@@ -18,6 +19,7 @@ const menuItems = [
   { key: '/projects', icon: <ProjectOutlined />, label: 'Projects' },
   { key: '/tasks', icon: <CheckSquareOutlined />, label: 'Tasks' },
   { key: '/notes', icon: <FileTextOutlined />, label: 'Notes' },
+  { key: '/invoices', icon: <AuditOutlined />, label: 'Faktury' },
 ]
 
 export default function AppLayout() {
