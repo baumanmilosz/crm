@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Table, Button, Modal, Form, Input, Popconfirm, Space, message, Typography } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
+import { useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   getClients,
@@ -12,6 +13,7 @@ import {
 import type { Client } from '../types'
 
 export default function ClientsPage() {
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [messageApi, contextHolder] = message.useMessage()
   const [modalOpen, setModalOpen] = useState(false)
@@ -68,6 +70,7 @@ export default function ClientsPage() {
       key: 'actions',
       render: (_: unknown, record: Client) => (
         <Space>
+          <Button size="small" onClick={() => navigate(`/clients/${record.id}`)}>View</Button>
           <Button size="small" onClick={() => openEdit(record)}>Edit</Button>
           <Popconfirm title="Delete this client?" onConfirm={() => deleteMutation.mutate(record.id)}>
             <Button size="small" danger>Delete</Button>
