@@ -16,6 +16,7 @@ model User {
   createdAt    DateTime  @default(now())
   notes        Note[]
   tasks        Task[]
+  invoices     Invoice[]
 }
 
 model Client {
@@ -28,6 +29,7 @@ model Client {
   projects  Project[]
   notes     Note[]
   tasks     Task[]
+  invoices  Invoice[]
 }
 
 model Project {
@@ -40,6 +42,7 @@ model Project {
   createdAt DateTime      @default(now())
   notes     Note[]
   tasks     Task[]
+  invoices  Invoice[]
 }
 
 model Note {
@@ -79,4 +82,47 @@ enum TaskStatus {
   PENDING
   IN_PROGRESS
   DONE
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PAID
+}
+
+enum VatRate {
+  VAT_23
+  VAT_8
+  VAT_5
+  VAT_0
+  ZW
+  NP
+}
+
+model Invoice {
+  id        String        @id @default(cuid())
+  number    String
+  issueDate DateTime
+  dueDate   DateTime
+  status    InvoiceStatus @default(DRAFT)
+  notes     String?
+  clientId  String
+  client    Client        @relation(fields: [clientId], references: [id])
+  projectId String?
+  project   Project?      @relation(fields: [projectId], references: [id])
+  userId    String
+  user      User          @relation(fields: [userId], references: [id])
+  items     InvoiceItem[]
+  createdAt DateTime      @default(now())
+}
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  description String
+  quantity    Decimal
+  unitPrice   Decimal
+  vatRate     VatRate
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
 }
