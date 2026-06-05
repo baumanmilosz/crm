@@ -1,8 +1,10 @@
 import { Button, Table, Tag, Typography, Descriptions, Space, Popconfirm, message, Divider } from 'antd'
-import { ArrowLeftOutlined, EditOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined, EditOutlined, DownloadOutlined } from '@ant-design/icons'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { PDFDownloadLink } from '@react-pdf/renderer'
 import { getInvoice, patchInvoiceStatus, deleteInvoice } from '../api/invoices'
+import InvoicePdf from '../components/InvoicePdf'
 import type { InvoiceItem, InvoiceStatus, VatRate } from '../types'
 import dayjs from 'dayjs'
 
@@ -112,6 +114,16 @@ export default function InvoiceDetailPage() {
           Faktury
         </Button>
         <Space>
+          <PDFDownloadLink
+            document={<InvoicePdf invoice={invoice} />}
+            fileName={`faktura-${invoice.number.replace(/\//g, '-')}.pdf`}
+          >
+            {({ loading }: { loading: boolean }) => (
+              <Button icon={<DownloadOutlined />} loading={loading}>
+                Pobierz PDF
+              </Button>
+            )}
+          </PDFDownloadLink>
           {invoice.status === 'DRAFT' && (
             <Button icon={<EditOutlined />} onClick={() => navigate(`/invoices/${id}/edit`)}>
               Edytuj
